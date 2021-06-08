@@ -3,7 +3,7 @@ import itertools
 import random
 import timeit
 from alive_progress import alive_bar
-import time
+import time 
 from os import system, name
 
 class bcolors:
@@ -27,7 +27,7 @@ def genererGraphe(nombrePoint = 5):
         "point_debut": "A",
         "points": {}
     }
-
+    
     for s in itertools.islice(iter_all_strings(), nombrePoint):
         graphe["points"][s] = {"points_voisins" : {}}
 
@@ -42,7 +42,7 @@ def genererGraphe(nombrePoint = 5):
             for i in range(nombreDeBranche):
                 while pointCheminAleatoire == point:
                     pointCheminAleatoire = list(graphe["points"])[random.randint(0,nombrePoint)-1]
-
+                    
                 distanceAleatoire = random.randint(1,10)
                 graphe["points"][point]["points_voisins"][pointCheminAleatoire] = distanceAleatoire
                 graphe["points"][pointCheminAleatoire]["points_voisins"][point] = distanceAleatoire
@@ -64,17 +64,19 @@ def computeShortestPath() :
     meilleurPoint = ''
     distanceTotale = 0
 
-    while pointFin not in pointParcourus :
+    print("Graphe en cours de résolution...")
 
+    while pointFin not in pointParcourus :
 
         for point in points[pointActuel]['points_voisins']:
             if point not in pointParcourus:
                 cheminsPossible.append({'point':point, 'distance':points[pointActuel]['points_voisins'][point] + distanceTotale, "point_precedent" : pointActuel})
 
         if len(cheminsPossible) == 0:
+            system('cls')
             print(bcolors.FAIL + "Il n'y a pas de solution pour ce graphe (aucun chemin n'existe entre le point de début et de fin)" + bcolors.ENDC)
             return
-
+            
         plusCourteDistance = float('inf')
 
         for point in cheminsPossible:
@@ -82,13 +84,13 @@ def computeShortestPath() :
             if distanceTotaleVoisin < plusCourteDistance:
                 plusCourteDistance = distanceTotaleVoisin
                 meilleurPoint = point['point']
-
+        
         if pointActuel != pointFin:
             for point in cheminsPossible:
                 if point['point'] == meilleurPoint:
                     historiqueMeilleursPoints.append(point)
                     cheminsPossible.pop(cheminsPossible.index(point))
-
+            
             if plusCourteDistance - distanceTotale > 0:
                 distanceTotale = plusCourteDistance
 
@@ -104,6 +106,7 @@ def computeShortestPath() :
             meilleurChemin.insert(1, pointHisto["point_precedent"])
             pointHisto = p
 
+    system('cls')
     print(bcolors.OKGREEN + 'Meilleur chemin : '+str(meilleurChemin) + bcolors.ENDC)
     print(bcolors.OKGREEN + 'Nombre de point du graphe : '+str(nombrePoint) + bcolors.ENDC)
     print(bcolors.OKGREEN + 'Distance la plus courte : '+str(distanceTotale) + bcolors.ENDC)
@@ -122,9 +125,9 @@ system('cls')
 if afficherGraphe == "o" or afficherGraphe == "O":
     print(bcolors.OKCYAN + str(graphe) + bcolors.ENDC)
     print("\n----------------------\n")
-
+    
 duration = timeit.timeit(computeShortestPath, number=1)
-print(bcolors.OKBLUE + 'Temps d\'exécution de l\'algorithme : '+str(round(duration*1000, 3))+' ms' + bcolors.ENDC)
+print(bcolors.OKBLUE + '\nTemps d\'exécution de l\'algorithme : '+str(round(duration*1000, 3))+' ms' + bcolors.ENDC)
 
 
 
